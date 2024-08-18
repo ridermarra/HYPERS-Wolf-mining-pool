@@ -8,19 +8,26 @@
 <body>
     <h1>Mining Pool DApp</h1>
 
+    <!-- Wallet connection section -->
     <button id="connectButton">Connect Wallet</button>
-    <p id="account"></p>
+    <p id="account">No account connected</p>
 
+    <!-- Contribution section -->
     <h2>Contribute to the Mining Pool</h2>
     <input type="text" id="contributionAmount" placeholder="Enter amount in ETH">
     <button id="contributeButton">Contribute</button>
 
+    <!-- Withdrawal section -->
     <h2>Withdraw Mined Tokens</h2>
     <button id="withdrawButton">Withdraw</button>
 
+    <!-- Status display -->
     <p id="status"></p>
 
+    <!-- Include Web3.js -->
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+
+    <!-- Include the custom app.js script -->
     <script src="app.js"></script>
 </body>
 </html>

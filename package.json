@@ -5,6 +5,8 @@
   "author": "blastoshi",
   "license": "MIT",
   "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
+    "dotenv": "^16.4.5",
     "node": "^22.6.0",
     "node.js": "^0.0.1-security"
   },

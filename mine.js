@@ -1,7 +1,11 @@
 const config = require('./config.js');
-const ethers = require('ethers');
-const provider = new ethers.JsonRpcProvider(config.RPC);
-const miner = new ethers.Wallet(config.MINER_PRIVATE_KEY, provider); // Assuming the owner of the mining pool needs to trigger mining
+const { ethers } = require('ethers'); // Import ethers correctly
+
+// Create the provider with the updated syntax
+const provider = new ethers.providers.JsonRpcProvider(config.RPC);
+
+// Create the wallet using the private key and connect it to the provider
+const miner = new ethers.Wallet(config.MINER_PRIVATE_KEY, provider);
 
 const MINING_POOL_ADDRESS = config.MINING_POOL_ADDRESS;
 const MINING_POOL_ABI = require('./miningPoolAbi.json');

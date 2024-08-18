@@ -1,66 +1,64 @@
 let web3;
 let account;
 
-const miningPoolAddress = 'YOUR_MINING_POOL_CONTRACT_ADDRESS_HERE';
+const miningPoolAddress = '0xc3b23B8AbbD89a37992b33dc431310B5fCcEec4B';
 const miningPoolAbi = [
-    [
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "account",
-                    "type": "address"
-                }
-            ],
-            "name": "balanceOf",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "bytes",
-                    "name": "extraData",
-                    "type": "bytes"
-                }
-            ],
-            "name": "mine",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "recipient",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "transfer",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }
-    ]
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "balanceOf",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes",
+                "name": "extraData",
+                "type": "bytes"
+            }
+        ],
+        "name": "mine",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "recipient",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "transfer",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
 ];
 
 const connectButton = document.getElementById('connectButton');
@@ -69,21 +67,31 @@ const withdrawButton = document.getElementById('withdrawButton');
 const accountDisplay = document.getElementById('account');
 const statusDisplay = document.getElementById('status');
 
-connectButton.addEventListener('click', async () => {
-    if (window.ethereum) {
+// Initialize Web3 and check if MetaMask is available
+async function initializeWeb3() {
+    if (typeof window.ethereum !== 'undefined') {
+        web3 = new Web3(window.ethereum);
         try {
-            // Request account access
-            await ethereum.request({ method: 'eth_requestAccounts' });
-            web3 = new Web3(window.ethereum);
-            account = (await web3.eth.getAccounts())[0];
+            // Request account access if needed
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const accounts = await web3.eth.getAccounts();
+            account = accounts[0];
             accountDisplay.innerText = `Connected account: ${account}`;
+            statusDisplay.innerText = "Wallet connected successfully.";
         } catch (error) {
-            console.error("User denied account access");
+            console.error("User denied account access or other error", error);
+            statusDisplay.innerText = "Failed to connect wallet.";
         }
     } else {
-        alert("Please install MetaMask to use this dApp!");
+        alert("Please install MetaMask to use this DApp!");
+        statusDisplay.innerText = "MetaMask not installed.";
     }
-});
+}
+
+// Call initializeWeb3 when the script loads
+initializeWeb3();
+
+connectButton.addEventListener('click', initializeWeb3);
 
 contributeButton.addEventListener('click', async () => {
     const amount = document.getElementById('contributionAmount').value;
