@@ -1,12 +1,21 @@
 {
-  "name": "Hypersound-miner",
+  "name": "hypersound-miner",
   "version": "1.0.0",
   "main": "mine.js",
   "author": "blastoshi",
   "license": "MIT",
   "dependencies": {
-    "ethers": "^6.13.2",
     "node": "^22.6.0",
     "node.js": "^0.0.1-security"
-  }
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.22.8"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [],
+  "description": ""
 }
