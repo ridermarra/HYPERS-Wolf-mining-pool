@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -10,7 +10,7 @@ interface IHypersound {
     function transfer(address recipient, uint256 amount) external returns (bool);
 }
 
-contract MiningPool {
+contract MiningPool is Ownable {
     mapping(address => uint256) public contributions;
     mapping(address => uint256) public minedTokens;
     uint256 public totalContributions;
@@ -23,7 +23,7 @@ contract MiningPool {
     event ContributionReceived(address indexed contributor, uint256 amount, uint256 newTxRate);
     event TokensWithdrawn(address indexed contributor, uint256 amount);
 
-    constructor(address _hypersoundAddress) {
+    constructor(address _hypersoundAddress) Ownable(msg.sender) {
         hypersoundAddress = _hypersoundAddress;
         hypersound = IHypersound(_hypersoundAddress);
     }
@@ -31,12 +31,16 @@ contract MiningPool {
     function contribute() external payable {
         require(msg.value > 0, "Contribution must be greater than 0");
 
-        contributions[msg.sender] += msg.value;
-        totalContributions += msg.value;
-
-        updateMiningRate(msg.value);
+        _processContribution(msg.sender, msg.value);
 
         emit ContributionReceived(msg.sender, msg.value, txRatePerMinute);
+    }
+
+    function _processContribution(address contributor, uint256 amount) internal {
+        contributions[contributor] += amount;
+        totalContributions += amount;
+
+        updateMiningRate(amount);
     }
 
     function updateMiningRate(uint256 _amount) internal {
@@ -63,7 +67,7 @@ contract MiningPool {
         return (minedTokens[contributor] * contributions[contributor]) / totalContributions;
     }
 
-    function mine() external {
+    function mine() external onlyOwner {
         hypersound.mine("");
         uint256 newTokens = hypersound.balanceOf(address(this)) - totalMinedTokens;
         totalMinedTokens += newTokens;
@@ -89,12 +93,7 @@ contract MiningPool {
     }
 
     // Prevent the contract owner from withdrawing any ETH or tokens
-    function emergencyWithdraw() external onlyOwner {
+    function emergencyWithdraw() external view onlyOwner {
         revert("Emergency withdraw is disabled");
-    }
-
-    // Receive function to accept ETH
-    receive() external payable {
-        contribute();
     }
 }
