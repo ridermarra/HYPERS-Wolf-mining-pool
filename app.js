@@ -1,61 +1,100 @@
 let web3;
 let account;
 
-const miningPoolAddress = '0xc3b23B8AbbD89a37992b33dc431310B5fCcEec4B';
+const miningPoolAddress = '<YOUR_MINING_POOL_CONTRACT_ADDRESS>'; // Replace with your deployed contract address
 const miningPoolAbi = [
     {
         "inputs": [
             {
                 "internalType": "address",
-                "name": "account",
+                "name": "_hypersoundAddress",
                 "type": "address"
             }
         ],
-        "name": "balanceOf",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "bytes",
-                "name": "extraData",
-                "type": "bytes"
-            }
-        ],
-        "name": "mine",
-        "outputs": [],
         "stateMutability": "nonpayable",
-        "type": "function"
+        "type": "constructor"
     },
     {
+        "anonymous": false,
         "inputs": [
             {
+                "indexed": true,
                 "internalType": "address",
-                "name": "recipient",
+                "name": "contributor",
                 "type": "address"
             },
             {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "newTxRate",
+                "type": "uint256"
+            }
+        ],
+        "name": "ContributionReceived",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "contributor",
+                "type": "address"
+            },
+            {
+                "indexed": false,
                 "internalType": "uint256",
                 "name": "amount",
                 "type": "uint256"
             }
         ],
-        "name": "transfer",
-        "outputs": [
+        "name": "ContributionWithdrawn",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                "indexed": true,
+                "internalType": "address",
+                "name": "contributor",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
             }
         ],
+        "name": "TokensWithdrawn",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "contribute",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "withdrawMinedTokens",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "withdrawContribution",
+        "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
     }
@@ -64,6 +103,7 @@ const miningPoolAbi = [
 const connectButton = document.getElementById('connectButton');
 const contributeButton = document.getElementById('contributeButton');
 const withdrawButton = document.getElementById('withdrawButton');
+const withdrawMinedButton = document.getElementById('withdrawMinedButton');
 const accountDisplay = document.getElementById('account');
 const statusDisplay = document.getElementById('status');
 
@@ -116,11 +156,26 @@ withdrawButton.addEventListener('click', async () => {
     if (web3 && account) {
         try {
             const contract = new web3.eth.Contract(miningPoolAbi, miningPoolAddress);
-            await contract.methods.withdraw().send({ from: account });
-            statusDisplay.innerText = `Successfully withdrew mined tokens.`;
+            await contract.methods.withdrawContribution().send({ from: account });
+            statusDisplay.innerText = `Successfully withdrew your contribution.`;
         } catch (error) {
             console.error("Withdrawal failed", error);
             statusDisplay.innerText = `Failed to withdraw: ${error.message}`;
+        }
+    } else {
+        alert("Please connect your wallet first.");
+    }
+});
+
+withdrawMinedButton.addEventListener('click', async () => {
+    if (web3 && account) {
+        try {
+            const contract = new web3.eth.Contract(miningPoolAbi, miningPoolAddress);
+            await contract.methods.withdrawMinedTokens().send({ from: account });
+            statusDisplay.innerText = `Successfully withdrew your mined tokens.`;
+        } catch (error) {
+            console.error("Mined token withdrawal failed", error);
+            statusDisplay.innerText = `Failed to withdraw mined tokens: ${error.message}`;
         }
     } else {
         alert("Please connect your wallet first.");

@@ -4,30 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mining Pool DApp</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <script src="app.js" defer></script>
 </head>
 <body>
     <h1>Mining Pool DApp</h1>
 
-    <!-- Wallet connection section -->
     <button id="connectButton">Connect Wallet</button>
-    <p id="account">No account connected</p>
+    <p id="account">Not connected</p>
 
-    <!-- Contribution section -->
-    <h2>Contribute to the Mining Pool</h2>
+    <h3>Contribute to the Mining Pool</h3>
     <input type="text" id="contributionAmount" placeholder="Enter amount in ETH">
     <button id="contributeButton">Contribute</button>
 
-    <!-- Withdrawal section -->
-    <h2>Withdraw Mined Tokens</h2>
-    <button id="withdrawButton">Withdraw</button>
+    <h3>Withdraw Contributions</h3>
+    <button id="withdrawButton">Withdraw Contribution</button>
 
-    <!-- Status display -->
+    <h3>Withdraw Mined Tokens</h3>
+    <button id="withdrawMinedButton">Withdraw Mined Tokens</button>
+
     <p id="status"></p>
-
-    <!-- Include Web3.js -->
-    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
-
-    <!-- Include the custom app.js script -->
-    <script src="app.js"></script>
 </body>
 </html>
